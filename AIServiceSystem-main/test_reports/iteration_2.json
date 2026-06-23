@@ -1,0 +1,36 @@
+{
+  "summary": "Backend testing of new Service Modules system. Added /app/backend/tests/test_modules.py with 28 tests covering Issues CRUD, Maintenance Tasks, Module aggregate (all 6 modules + invalid + unowned), and module-scoped AI analyze. Found and fixed 1 critical bug (Mongo _id leakage in /api/ai/module-analyze causing 500). 27/28 module tests pass and 26/26 regression tests on prior backend_test.py (non-AI) pass. The 28th test (module turbo AI analyze) was verified working via direct curl (200 OK, 7128-char Turkish analysis, module_label='Turbo Sistemi'); subsequent pytest run hit Emergent LLM budget cap (env-level, not a code issue).",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {"ui_bugs": [], "integration_issues": [], "design_issues": []},
+  "test_report_links": [
+    "/app/backend/tests/test_modules.py",
+    "/app/backend/tests/backend_test.py",
+    "/app/test_reports/pytest/modules_results.xml",
+    "/app/test_reports/pytest/backend_results.xml"
+  ],
+  "action_items": [
+    "Emergent LLM budget cap reached ($0.40 max) during back-to-back AI test runs; if tests rerun is needed, request budget refresh or stub AI calls in CI.",
+    "Consider centralizing the 'insert_one(dict(doc))' pattern (or strip _id before returning) across all places where a dict is reused after insert_one to prevent regression — currently fixed only in ai_module_analyze."
+  ],
+  "critical_code_review_comments": [
+    "BUG FIXED: POST /api/ai/module-analyze/{vid}/{key} returned 500 because motor's insert_one(doc) mutates the dict to add ObjectId _id, which was then spread into the JSON response and broke serialization ('ObjectId is not iterable'). Fixed by passing dict(doc) (shallow copy) to insert_one so the original dict returned to the client stays clean.",
+    "MaintenanceTask response lacks `module` field — periodic module aggregate works because all maintenance tasks are surfaced under the periodic module by design, but if more modules ever need maintenance tasks, model needs a module discriminator.",
+    "create_maintenance_task allows customer to create tasks (consider if only admin should — not specified in requirements, current behaviour matches stated tests).",
+    "server.py is 939 lines — could be split into routers/{auth,vehicles,appointments,service_records,issues,maintenance,modules,ai}.py for maintainability.",
+    "ANALYSIS_PROMPT and module prompt: vehicle km is sourced from `veh['km']` but service-records have their own `mileage`; the recurring logic uses last 6 months by `date` string compare which is OK only because dates are ISO YYYY-MM-DD."
+  ],
+  "updated_files": [
+    "/app/backend/server.py (line ~732: insert_one(doc) -> insert_one(dict(doc)) to prevent _id leakage)",
+    "/app/backend/tests/test_modules.py (new test file, 28 tests)"
+  ],
+  "success_rate": {"backend": "98% (53/54: 27/28 modules + 26/26 regression; 1 AI test blocked by LLM budget, manually verified passing via curl)", "frontend": "not tested (out of scope)"},
+  "test_credentials": "Admin: admin@truckservis.com / Admin123!  |  Customer: musteri@truckservis.com / Musteri123!  |  Test-created users prefixed TEST_",
+  "seed_data_creation": "Used existing seed (3 vehicles for demo customer, Mercedes Actros plate '34 ABC 1453' with 13 issues across modules, 7 service records, 7 maintenance tasks). Test created and cleaned up TEST_ prefixed issues/tasks/vehicles.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "All 6 module keys + invalid + unowned vehicle paths are verified. The module turbo AI analyze was confirmed working via direct curl returning HTTP 200, 7128-char Turkish analysis text, and module_label='Turbo Sistemi'. If LLM budget is refreshed, the single failing pytest test will pass without code changes. Recurring detection on turbo works (count=2, period='son 6 ay', severity='orta'). Periodic maintenance items return status/next_due_km/remaining_km correctly.",
+  "rca of the issue": "RCA for the fixed bug: motor (motor.motor_asyncio) insert_one() mutates the input dict by injecting Mongo's auto-generated `_id` (ObjectId). The endpoint then returned `{**doc, 'module_label': ...}` which carried _id into the JSON response → FastAPI's jsonable_encoder cannot serialize ObjectId → 500 Internal Server Error. Reproduction: POST /api/ai/module-analyze/{mercedes_vid}/turbo as authenticated customer. Mitigation applied: insert_one(dict(doc)) — pass a shallow copy so the original returned dict stays free of _id."
+}

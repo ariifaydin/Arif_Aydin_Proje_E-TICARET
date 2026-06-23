@@ -1,0 +1,88 @@
+{
+  "theme": "Dark Industrial / Automotive",
+  "archetype": "Archetype 2: Performance Pro (Industrial Variant)",
+  "language": "Turkish (Türkçe)",
+  "colors": {
+    "dark": {
+      "background": "#0A0A0A",
+      "surface": "#141414",
+      "surface_glass": "bg-black/60 backdrop-blur-xl border-white/10",
+      "primary": "#FF5A00",
+      "text_main": "#F5F5F5",
+      "text_muted": "#8A8A8A",
+      "border": "#262626",
+      "success": "#22C55E",
+      "danger": "#EF4444"
+    },
+    "light": {
+      "background": "#F5F5F5",
+      "surface": "#FFFFFF",
+      "surface_glass": "bg-white/70 backdrop-blur-xl border-black/10",
+      "primary": "#E65000",
+      "text_main": "#0A0A0A",
+      "text_muted": "#5C5C5C",
+      "border": "#E0E0E0",
+      "success": "#16A34A",
+      "danger": "#DC2626"
+    }
+  },
+  "typography": {
+    "headings_font": "Barlow Condensed",
+    "body_font": "Manrope",
+    "mono_font": "Roboto Mono",
+    "hierarchy": {
+      "h1": "text-5xl sm:text-6xl uppercase tracking-tighter font-black",
+      "h2": "text-3xl sm:text-4xl uppercase tracking-tight font-bold",
+      "h3": "text-xl sm:text-2xl uppercase tracking-tight font-bold",
+      "h4": "text-lg sm:text-xl uppercase font-semibold",
+      "body": "text-base leading-relaxed font-medium",
+      "labels": "text-xs uppercase tracking-[0.2em] font-bold text-muted"
+    }
+  },
+  "layout_spacing": {
+    "container_padding": "p-6 md:p-12 lg:p-16",
+    "section_gap": "gap-12 md:gap-24",
+    "grid_dashboard": "grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6",
+    "grid_bento": "grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-8",
+    "border_radius": "rounded-none or rounded-sm for industrial sharp look"
+  },
+  "components_strategy": {
+    "cards": "Flat background, sharp corners (max 2px radius), 1px solid border. Hover states should include a subtle -translate-y-1 and border-primary shift.",
+    "buttons": "Sharp corners, high contrast. Primary uses bg-primary text-white. Secondary uses border border-primary text-primary. Always explicitly define hover text color.",
+    "inputs": "Shadcn based. Dark mode: bg-[#141414] border-[#262626] focus:border-[#FF5A00]. Light mode: bg-white border-[#E0E0E0].",
+    "ai_chat": "Terminal-style UI for the AI Heavy Vehicle Assistant. Use mono font for diagnostic readouts. High-contrast orange accents for AI responses.",
+    "tables": "Dense layout, uppercase headers, prominent status badges for service history."
+  },
+  "image_urls": [
+    {
+      "url": "https://images.pexels.com/photos/6563903/pexels-photo-6563903.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+      "category": "hero_background",
+      "description": "Red semi-truck in desert highway. Use for landing page hero section with a max bg-black/50 overlay for text contrast."
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1615906655593-ad0386982a0f?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHwxfHxtZWNoYW5pYyUyMHJlcGFpcmluZyUyMHRydWNrJTIwZW5naW5lfGVufDB8fHx8MTc4MDkyMDI2OHww&ixlib=rb-4.1.0&q=85",
+      "category": "service_section",
+      "description": "Mechanic working on engine. Use for the 'Services Offered' or 'About Us' section."
+    },
+    {
+      "url": "https://images.unsplash.com/photo-1551522435-a13afa10f103?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA2MDV8MHwxfHNlYXJjaHwxfHxhdXRvbW90aXZlJTIwZ2FyYWdlJTIwaW50ZXJpb3J8ZW58MHx8fHwxNzgwOTIwMjY4fDA&ixlib=rb-4.1.0&q=85",
+      "category": "auth_background",
+      "description": "Garage interior. Good for the customer portal login background or contact section."
+    }
+  ],
+  "accessibility_and_motion": {
+    "motion": "Minimalistic and rugged. Sharp micro-interactions. Avoid bouncy animations. Use rapid opacity and transform transitions (e.g. 0.15s ease).",
+    "accessibility": "Minimum 4.5:1 contrast ratio. All interactive elements must have a data-testid attribute in kebab-case."
+  },
+  "instructions_to_main_agent": [
+    "CRITICAL: The entire application UI (navigation, buttons, forms, placeholders, AI chat default texts) MUST be in Turkish (Türkçe). Do not use English labels.",
+    "Turkish Glossary: Home -> Ana Sayfa, Dashboard -> Müşteri Paneli, Appointments -> Randevular, Service History -> Servis Geçmişi, AI Assistant -> Yapay Zeka Asistanı, Admin -> Yönetim Paneli, Book -> Randevu Al.",
+    "Use @phosphor-icons/react for icons to match the industrial/technical aesthetic.",
+    "Implement a dark/light mode toggle in the header. Default theme should be dark.",
+    "Customer Portal and Admin Panel MUST use the 'Control Room' dense grid layout, utilizing screen real estate for data tables, appointment lists, and AI analysis widgets.",
+    "The Landing page MUST use a wide 'Bento' or 'Tetris' asymmetrical layout. Avoid basic bootstrap column looks.",
+    "CRITICAL: Apply 'data-testid' on all interactive elements (e.g., data-testid='login-submit-button', data-testid='book-appointment-btn').",
+    "Font Implementation: Do NOT use 'Inter'. Configure tailwind.config.js to load 'Barlow Condensed' (headings), 'Manrope' (body), and 'Roboto Mono' (technical data/AI outputs).",
+    "Use Shadcn UI for the complex interactions (Datepicker for appointments, Tabs, Tables) but customize their borders and border-radius to be sharp (rounded-none or rounded-sm)."
+  ]
+}
